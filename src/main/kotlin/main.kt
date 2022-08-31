@@ -18,9 +18,12 @@ fun main() = application {
         ) { screen ->
             when (screen) {
                 is Screens.Home -> Home(onItemClick = {
-                    screenState = (Screens.Detail)
+                    screenState = (Screens.Detail(id = it.id.toInt()))
                 })
-                is Screens.Detail -> Detail(onBack = { screenState = (Screens.Home) })
+                is Screens.Detail -> Detail(
+                    onBack = { screenState = (Screens.Home) },
+                    id = screen.id
+                )
             }
         }
     }

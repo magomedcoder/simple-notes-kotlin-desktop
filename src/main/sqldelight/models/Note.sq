@@ -6,3 +6,7 @@ CREATE TABLE Note (
 insert: INSERT INTO Note(title) VALUES (?);
 
 selectAll: SELECT * FROM Note;
+
+selectNote: SELECT * FROM Note WHERE id = ?;
+
+deleteNote: DELETE FROM Note WHERE id = ?;

@@ -18,12 +18,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import models.Note
 import utils.DatabaseHelper
 import models.NoteQueries
 
 @ExperimentalFoundationApi
 @Composable
-fun Home(onItemClick: () -> Unit) {
+fun Home(onItemClick: (Note) -> Unit) {
 
     val searchQuery = remember { mutableStateOf("") }
     val playerQueries: NoteQueries = DatabaseHelper.queries
@@ -44,7 +45,7 @@ fun Home(onItemClick: () -> Unit) {
                 )
                 FloatingActionButton(
                     modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 10.dp),
-                    onClick = { onItemClick.invoke()  }
+                    onClick = { onItemClick.invoke(Note(0, ""))  }
                 ) {
                     Icon(Icons.Sharp.Add, contentDescription = "add")
                 }
@@ -55,9 +56,9 @@ fun Home(onItemClick: () -> Unit) {
             cells = GridCells.Adaptive(300.dp)
         ) {
             itemsIndexed(
-                items = list
+                items = list.filter { it.title.contains(searchQuery.value, ignoreCase = true) }
             ) { _, note ->
-                ListItem(note)
+                ListItem(note, onItemClick)
             }
         }
     }

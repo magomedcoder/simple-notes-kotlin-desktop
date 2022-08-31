@@ -1,13 +1,17 @@
 package ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExtendedFloatingActionButton
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,10 +22,11 @@ import androidx.compose.ui.unit.dp
 import utils.DatabaseHelper
 
 @Composable
-fun Detail(onBack: () -> Unit) {
+fun Detail(onBack: () -> Unit, id: Int) {
 
     val queries = DatabaseHelper.queries
-    val title = remember { mutableStateOf("") }
+    val note = queries.selectNote(id = id.toLong()).executeAsOneOrNull()
+    val title = remember { mutableStateOf(note?.title ?: "") }
 
     Column(
         modifier = Modifier
@@ -45,5 +50,14 @@ fun Detail(onBack: () -> Unit) {
                 onBack.invoke()
             }
         )
+        Icon(
+            imageVector = Icons.Filled.Delete,
+            contentDescription = "del",
+            modifier = Modifier
+                .padding(end = 20.dp, top = 15.dp)
+                .clickable {
+                    queries.deleteNote(id.toLong())
+                    onBack.invoke()
+                })
     }
 }

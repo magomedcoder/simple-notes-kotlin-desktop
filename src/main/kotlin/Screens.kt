@@ -1,4 +1,4 @@
 sealed class Screens {
     object Home : Screens()
-    object Detail : Screens()
+    data class Detail(val id: Int) : Screens()
 }
