@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
@@ -14,10 +15,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import utils.DatabaseHelper
 
 @Composable
-fun Detail() {
-    val title = remember { mutableStateOf( "") }
+fun Detail(onBack: () -> Unit) {
+
+    val queries = DatabaseHelper.queries
+    val title = remember { mutableStateOf("") }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -30,6 +35,15 @@ fun Detail() {
             onValueChange = { title.value = it },
             label = { Text("Название", color = Color.Gray) },
             value = title.value
+        )
+        ExtendedFloatingActionButton(
+            text = {
+                Text(text = "Сохранить")
+            },
+            onClick = {
+                queries.insert(title.value)
+                onBack.invoke()
+            }
         )
     }
 }

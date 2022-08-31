@@ -3,6 +3,9 @@ package ui
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.GridCells
+import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -15,11 +18,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import utils.DatabaseHelper
+import models.NoteQueries
 
 @ExperimentalFoundationApi
 @Composable
 fun Home(onItemClick: () -> Unit) {
+
     val searchQuery = remember { mutableStateOf("") }
+    val playerQueries: NoteQueries = DatabaseHelper.queries
+    val list = playerQueries.selectAll().executeAsList()
+
     Scaffold(
         topBar = {
             Row {
@@ -42,6 +51,14 @@ fun Home(onItemClick: () -> Unit) {
             }
         }
     ) {
-
+        LazyVerticalGrid(
+            cells = GridCells.Adaptive(300.dp)
+        ) {
+            itemsIndexed(
+                items = list
+            ) { _, note ->
+                ListItem(note)
+            }
+        }
     }
 }

@@ -20,7 +20,7 @@ fun main() = application {
                 is Screens.Home -> Home(onItemClick = {
                     screenState = (Screens.Detail)
                 })
-                is Screens.Detail -> Detail()
+                is Screens.Detail -> Detail(onBack = { screenState = (Screens.Home) })
             }
         }
     }
