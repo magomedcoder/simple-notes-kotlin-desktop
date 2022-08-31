@@ -20,6 +20,7 @@ fun ListItem(note: Note, onItemClick: (Note) -> Unit) {
         Column(modifier = Modifier.padding(10.dp)) {
             Row {
                 Text(text = note.title)
+                Text(text = note.body)
             }
         }
     }

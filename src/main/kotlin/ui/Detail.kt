@@ -27,6 +27,7 @@ fun Detail(onBack: () -> Unit, id: Int) {
     val queries = DatabaseHelper.queries
     val note = queries.selectNote(id = id.toLong()).executeAsOneOrNull()
     val title = remember { mutableStateOf(note?.title ?: "") }
+    val body = remember { mutableStateOf(note?.body ?: "") }
 
     Column(
         modifier = Modifier
@@ -41,12 +42,19 @@ fun Detail(onBack: () -> Unit, id: Int) {
             label = { Text("Название", color = Color.Gray) },
             value = title.value
         )
+        TextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = 60.dp)
+                .clip(RoundedCornerShape(10.dp)),
+            label = { Text("Заметка...", color = Color.Gray) },
+            onValueChange = { body.value = it },
+            value = body.value
+        )
         ExtendedFloatingActionButton(
-            text = {
-                Text(text = "Сохранить")
-            },
+            text = { Text(text = "Сохранить") },
             onClick = {
-                queries.insert(title.value)
+                queries.insert(title.value, body.value)
                 onBack.invoke()
             }
         )

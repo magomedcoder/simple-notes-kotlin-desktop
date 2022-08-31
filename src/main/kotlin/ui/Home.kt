@@ -45,7 +45,7 @@ fun Home(onItemClick: (Note) -> Unit) {
                 )
                 FloatingActionButton(
                     modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 10.dp),
-                    onClick = { onItemClick.invoke(Note(0, ""))  }
+                    onClick = { onItemClick.invoke(Note(0, "", ""))  }
                 ) {
                     Icon(Icons.Sharp.Add, contentDescription = "add")
                 }
