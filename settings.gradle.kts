@@ -4,7 +4,5 @@ pluginManagement {
         gradlePluginPortal()
         maven { url = uri("https://maven.pkg.jetbrains.space/public/p/compose/dev") }
     }
-
 }
-rootProject.name = "notes-kotlin-desktop"
-
+rootProject.name = "Simple-notes-kotlin-desktop"
