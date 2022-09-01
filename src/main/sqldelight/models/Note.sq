@@ -1,17 +1,20 @@
 CREATE TABLE Note (
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
-    body TEXT NOT NULL
+    body TEXT NOT NULL,
+    color INTEGER NOT NULL,
+    updatedAt INTEGER DEFAULT NULL,
+    createdAt INTEGER DEFAULT NULL
 );
 
 CREATE INDEX title ON Note(title);
 
-insert: INSERT INTO Note(title, body) VALUES (?, ?);
+insert: INSERT INTO Note(title, body, color, updatedAt, createdAt) VALUES (?, ?,?, ?,?);
 
-selectAll: SELECT * FROM Note;
+selectAll: SELECT * FROM Note ORDER BY createdAt DESC;
 
 selectNote: SELECT * FROM Note WHERE id = ?;
 
 deleteNote: DELETE FROM Note WHERE id = ?;
 
-updateNote: UPDATE Note SET title = ?, body = ? WHERE id = ?;
+updateNote: UPDATE Note SET title = ?, body = ?, updatedAt = ? WHERE id = ?;

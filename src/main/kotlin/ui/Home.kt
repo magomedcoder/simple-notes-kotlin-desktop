@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import models.Note
 import models.NoteQueries
+import theme.listColor
 import utils.DatabaseHelper
 
 @ExperimentalFoundationApi
@@ -84,7 +85,7 @@ fun Home(onItemClick: (Note) -> Unit) {
                         )
                         .size(30.dp)
                         .clickable {
-                            onItemClick.invoke(Note(0, "", ""))
+                            onItemClick.invoke(Note(0, "", "", listColor[0], null, null))
                         }
                 )
             }

@@ -8,9 +8,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,9 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import utils.DatabaseHelper
+import utils.getDateString
 
 @Composable
 fun Detail(onBack: () -> Unit, id: Int) {
@@ -29,9 +30,11 @@ fun Detail(onBack: () -> Unit, id: Int) {
     val note = queries.selectNote(id = id.toLong()).executeAsOneOrNull()
     val title = remember { mutableStateOf(note?.title ?: "") }
     val body = remember { mutableStateOf(note?.body ?: "") }
+    val edit = remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
+            .fillMaxHeight()
             .fillMaxSize()
     ) {
         Row(
@@ -49,29 +52,66 @@ fun Detail(onBack: () -> Unit, id: Int) {
                         onBack.invoke()
                     })
             Row() {
-                Icon(
-                    imageVector = Icons.Filled.Add,
-                    contentDescription = "Сохранить",
-                    modifier = Modifier
-                        .padding(end = 20.dp, top = 15.dp)
-                        .size(25.dp)
-                        .clickable {
-                            if (queries.selectNote(id.toLong()).executeAsOneOrNull() == null)
-                                queries.insert(title.value, body.value)
-                            else queries.updateNote(title.value, body.value, id.toLong())
-                            onBack.invoke()
-                        })
-                if (queries.selectNote(id.toLong()).executeAsOneOrNull() != null)
+                if (queries.selectNote(id.toLong()).executeAsOneOrNull() == null && body.value.isNotEmpty())
                     Icon(
-                        imageVector = Icons.Filled.Delete,
-                        contentDescription = "del",
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = "Создать",
                         modifier = Modifier
                             .padding(end = 20.dp, top = 15.dp)
                             .size(25.dp)
                             .clickable {
-                                queries.deleteNote(id.toLong())
+                                queries.insert(
+                                    title.value,
+                                    body.value,
+                                    theme.listColor.random(),
+                                    null,
+                                    System.currentTimeMillis() / 1000L
+                                )
                                 onBack.invoke()
-                            })
+                            }
+                    )
+                if (queries.selectNote(id.toLong()).executeAsOneOrNull() != null) {
+                    if (!edit.value)
+                        Icon(
+                            imageVector = Icons.Filled.Edit,
+                            contentDescription = "Редактировать",
+                            modifier = Modifier
+                                .padding(end = 20.dp, top = 15.dp)
+                                .size(25.dp)
+                                .clickable {
+                                    edit.value = true
+                                }
+                        )
+                    if (edit.value) {
+                        Icon(
+                            imageVector = Icons.Filled.Check,
+                            contentDescription = "Сохранить",
+                            modifier = Modifier
+                                .padding(end = 20.dp, top = 15.dp)
+                                .size(25.dp)
+                                .clickable {
+                                    queries.updateNote(
+                                        title.value,
+                                        body.value,
+                                        System.currentTimeMillis() / 1000L,
+                                        id.toLong()
+                                    )
+                                    edit.value = false
+                                }
+                        )
+                        Icon(
+                            imageVector = Icons.Filled.Delete,
+                            contentDescription = "Удалить",
+                            modifier = Modifier
+                                .padding(end = 20.dp, top = 15.dp)
+                                .size(25.dp)
+                                .clickable {
+                                    queries.deleteNote(id.toLong())
+                                    onBack.invoke()
+                                }
+                        )
+                    }
+                }
             }
         }
         TextField(
@@ -89,12 +129,13 @@ fun Detail(onBack: () -> Unit, id: Int) {
             colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
-            )
+            ),
+            enabled = !(queries.selectNote(id.toLong()).executeAsOneOrNull() != null && !edit.value)
         )
         TextField(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight()
+                .height(260.dp)
                 .padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = 60.dp)
                 .clip(RoundedCornerShape(10.dp)),
             textStyle = TextStyle(
@@ -107,8 +148,18 @@ fun Detail(onBack: () -> Unit, id: Int) {
             colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
-            )
+            ),
+            enabled = !(queries.selectNote(id.toLong()).executeAsOneOrNull() != null && !edit.value)
         )
-
+        if (note?.updatedAt != null)
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = "Последние изменения: " + getDateString(note.updatedAt),
+                fontSize = 10.sp,
+                color = Color.Gray,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Center
+            )
     }
 }
