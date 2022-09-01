@@ -13,3 +13,5 @@ selectAll: SELECT * FROM Note;
 selectNote: SELECT * FROM Note WHERE id = ?;
 
 deleteNote: DELETE FROM Note WHERE id = ?;
+
+updateNote: UPDATE Note SET title = ?, body = ? WHERE id = ?;

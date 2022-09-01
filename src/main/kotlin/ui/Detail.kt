@@ -54,10 +54,13 @@ fun Detail(onBack: () -> Unit, id: Int) {
         ExtendedFloatingActionButton(
             text = { Text(text = "Сохранить") },
             onClick = {
-                queries.insert(title.value, body.value)
+                if (queries.selectNote(id.toLong()).executeAsOneOrNull() == null)
+                    queries.insert(title.value, body.value)
+                else queries.updateNote(title.value, body.value, id.toLong())
                 onBack.invoke()
             }
         )
+        if (queries.selectNote(id.toLong()).executeAsOneOrNull() != null)
         Icon(
             imageVector = Icons.Filled.Delete,
             contentDescription = "del",
