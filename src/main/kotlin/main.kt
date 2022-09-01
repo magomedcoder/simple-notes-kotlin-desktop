@@ -4,15 +4,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
 import ui.Detail
 import ui.Home
 
 @ExperimentalFoundationApi
 fun main() = application {
+
     var screenState by remember { mutableStateOf<Screens>(Screens.Home) }
-    Window(onCloseRequest = ::exitApplication) {
+
+    Window(
+        onCloseRequest = ::exitApplication,
+        title = "Заметки",
+        state = WindowState(size = DpSize(500.dp, 800.dp))
+    ) {
         Crossfade(
             targetState = screenState
         ) { screen ->
